@@ -18,10 +18,8 @@ async function loadData() {
     } catch (e) { console.error('Ошибка при загрузке данных:', e); }
 }
 
-// --- МАСКИ ВВОДА ---
 document.addEventListener('DOMContentLoaded', () => {
     $('newEmpTg').addEventListener('input', (e) => {
-        // Оставляем только латиницу, цифры, @ и _
         let clean = e.target.value.replace(/[^a-zA-Z0-9_@]/g, '').toLowerCase();
         if (clean && !clean.startsWith('@')) clean = '@' + clean.replace(/@/g, '');
         e.target.value = clean;
@@ -148,15 +146,28 @@ function updateStats() {
 }
 
 function renderTasks() {
-    const search = $('search').value.toLowerCase(), filter = $('filter').value;
+    const search = $('search').value.toLowerCase();
+    const filter = $('filter').value;
+    const sort = $('sort').value; // Вот она, переменная сортировки!
     const hideDone = $('hideDoneCheckbox') ? $('hideDoneCheckbox').checked : false;
-    const visible = tasks.filter(t => {
+
+    let visible = tasks.filter(t => {
         const matchSearch = t.title.toLowerCase().includes(search);
         const matchFilter = filter === 'all' || t.status === filter;
         const matchHide = !hideDone || t.status !== 'Выполнена';
         return matchSearch && matchFilter && matchHide;
     });
+
+    // Сортировка
+    if (sort === 'date') {
+        visible.sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999'));
+    } else if (sort === 'priority') {
+        const weight = { 'Высокий': 1, 'Средний': 2, 'Низкий': 3 };
+        visible.sort((a, b) => (weight[a.priority] || 2) - (weight[b.priority] || 2));
+    }
+
     $('emptyMsg').style.display = visible.length ? 'none' : 'block';
+
     $('taskList').innerHTML = visible.map(t => `<div class="task">
         <h3>${t.title}</h3><p>${t.description || 'Без описания'}</p>
         <div class="meta">Проект: ${t.project_name || '—'} | Исполнитель: ${t.assignee_name || '—'} | Срок: ${t.date || '—'}</div>
@@ -167,13 +178,9 @@ function renderTasks() {
             ${t.status !== 'Выполнена' ? `<button class="btn-status" onclick="changeStatus(${t.id}, 'Выполнена')">Готово</button>` : ''}
             <button class="btn-delete" onclick="deleteTask(${t.id})">Удал.</button>
         </div></div>`).join('');
+
     updateStats();
 }
-
-const modal = $('settingsModal'), themeBtn = $('themeBtn');
-$('settingsBtn').onclick = () => modal.classList.add('show');
-window.closeSettings = () => modal.classList.remove('show');
-window.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
 
 function applyWallpaper(type) {
     if (type === 'light') document.body.style.setProperty('background', '#f0f0f0', 'important');
