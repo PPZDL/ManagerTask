@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система управления задачами</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div id="appScreen" class="app-layout">
+    <aside class="sidebar">
+        <h2>Сотрудники</h2>
+        <div class="employee-form">
+            <input type="text" id="newEmpName" placeholder="Имя">
+            <input type="text" id="newEmpTg" placeholder="Telegram (@ник)">
+            <input type="text" id="newEmpPhone" placeholder="Телефон">
+            <button id="addEmpBtn">Добавить</button>
+        </div>
+        <div id="employeeList" class="employee-list"></div>
+    </aside>
+
+    <main class="main-content">
+        <div class="app-header">
+            <h1>Управление задачами</h1>
+            <div class="header-controls">
+                <button id="settingsBtn" class="btn-settings" title="Настройки">⚙️</button>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">Всего: <b id="statTotal">0</b></div>
+            <div class="stat-card stat-done">Готово: <b id="statDone">0</b></div>
+            <div class="stat-card stat-work">В работе: <b id="statWork">0</b></div>
+            <div class="stat-card stat-new">Не готово: <b id="statNew">0</b></div>
+        </div>
+
+        <div class="project-box">
+            <h3>Проекты</h3>
+            <div class="project-form">
+                <input type="text" id="newProjectName" placeholder="Название проекта">
+                <button id="addProjectBtn">Добавить</button>
+            </div>
+            <div id="projectList" class="project-list"></div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-box">
+                <h3>Задача</h3>
+                <div class="form-group"><input type="text" id="title" placeholder="Название"></div>
+                <div class="form-group"><textarea id="desc" placeholder="Описание"></textarea></div>
+                <div class="form-row">
+                    <select id="project"></select>
+                    <select id="assignee"></select>
+                </div>
+                <div class="form-row">
+                    <select id="priority">
+                        <option value="Низкий">Низкий приоритет</option>
+                        <option value="Средний" selected>Средний приоритет</option>
+                        <option value="Высокий">Высокий приоритет</option>
+                    </select>
+                    <input type="date" id="date">
+                </div>
+                <select id="status">
+                    <option value="Новая">Новая</option>
+                    <option value="В работе">В работе</option>
+                    <option value="Выполнена">Выполнена</option>
+                </select>
+                <button id="saveBtn" class="btn-save">Сохранить</button>
+            </div>
+        </div>
+
+        <div class="tasks-section">
+            <h3>Список задач</h3>
+            <div class="tools">
+                <input type="text" id="search" placeholder="Поиск...">
+                <select id="filter">
+                    <option value="all">Все статусы</option>
+                    <option value="Новая">Новая</option>
+                    <option value="В работе">В работе</option>
+                    <option value="Выполнена">Выполнена</option>
+                </select>
+                <select id="sort">
+                    <option value="none">Без сортировки</option>
+                    <option value="date">По сроку</option>
+                    <option value="priority">По приоритету</option>
+                </select>
+            </div>
+            <div id="taskList"></div>
+            <p id="emptyMsg" class="empty">Задач нет.</p>
+        </div>
+
+        <button onclick="copySupportNumber()" class="support-badge" id="supportBtn">📞 Поддержка: +7(985)738-43-75</button>
+    </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<div id="settingsModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeSettings()">×</span>
+        <h2>Настройки</h2>
+        <div class="setting-group">
+            <h3>Тема оформления</h3>
+            <button id="themeBtn" class="btn-theme">🌙 Темная тема</button>
+        </div>
+        <div class="setting-group">
+            <h3>Обои</h3>
+            <div class="wallpaper-picker">
+                <div class="wallpaper-option" onclick="setWallpaper('bg1')"><img src="/static/images/wallpapers/bg1.jpg" alt=""></div>
+                <div class="wallpaper-option" onclick="setWallpaper('bg2')"><img src="/static/images/wallpapers/bg2.jpg" alt=""></div>
+                <div class="wallpaper-option" onclick="setWallpaper('bg3')"><img src="/static/images/wallpapers/bg3.jpg" alt=""></div>
+                <div class="wallpaper-option wp-light" onclick="setWallpaper('light')"></div>
+                <div class="wallpaper-option wp-dark" onclick="setWallpaper('dark')"></div>
+            </div>
+        </div>
+        <div class="setting-group">
+            <h3>Отображение</h3>
+            <label class="checkbox-label"><input type="checkbox" id="hideDoneCheckbox"> Скрывать выполненные задачи</label>
+            <label class="checkbox-label"><input type="checkbox" id="gridViewCheckbox"> Сетка (3 в ряд)</label>
+        </div>
+    </div>
+</div>
+<script src="/static/script.js"></script>
+</body>
+</html>
+
